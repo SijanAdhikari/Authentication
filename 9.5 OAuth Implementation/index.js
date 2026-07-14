@@ -79,6 +79,21 @@ app.get("/auth/google/secrets",
 );
 
 
+app.get("/logut", (req,res)=>{
+  req.logout((err)=>{
+    if(err) console.log(err)
+    res.redirect("/");
+  });
+});
+
+
+app.get("/submit",(req,res)=>{
+  res.render("submit.ejs");
+})
+
+
+
+
 app.post(
   "/login",
   passport.authenticate("local", {
@@ -119,6 +134,7 @@ app.post("/register", async (req, res) => {
     console.log(err);
   }
 });
+
 
 passport.use("local",
   new Strategy(async function verify(username, password, cb) {

@@ -56,18 +56,18 @@ app.get("/logout", (req, res) => {
   });
 });
 
-app.get("/secrets", (req, res) => {
+app.get("/secrets", async(req, res) => {
   // pull in the user secret to render in secrets.ejs
 
   if (req.isAuthenticated()) {
     try{
-      const result = await db.query("SELECT secrt FROM users WHERE email = $1",[req.user.email]);
+      const result = await db.query("SELECT secret FROM users WHERE email = $1",[req.user.email]);
       console.log(result);
       const secret = result.rows[0].secret;
       if(secret){
-        res.render("secrets.ejs",{secret:secret});
+        res.render("secrets.ejs",{secret: secret});
       }else{
-        res.render("secrets.ejs",{secret:"TOPSECRETS HERE"})''
+        res.render("secrets.ejs",{secret: "TOPSECRETS HERE"});
       }
     }catch(err){
       console.log(err);
@@ -145,10 +145,10 @@ app.post("/register", async (req, res) => {
 
 app.post("/submit", async(req,res)=>{
   const submittedSecret = req.body.secret;
-  console.log(req.user);
+  console.log(req.user);  //passport feature req.user
   try{
   await db.query("UPDATE users SET secret = $1 WHERE email =$2",[submittedSecret, req.user.email]);
-  res.redirect("/secretes");
+  res.redirect("/secrets");
 }catch(err){
   console.log(err);
 }
